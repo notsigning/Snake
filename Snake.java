@@ -18,20 +18,20 @@ public class Snake extends JComponent{
     private int foodx;
     private int foody;
     int score;
-    public int getDirection()
+    public int getDirection() //returns direction
     {
         return direction;
     }
-    public void setDirection(int a)
+    public void setDirection(int a) //changes direction
     {
         direction = a;
     }
-    public Snake()
+    public Snake() //constructor
     {
         super();
         reset();
     }
-    public void reset()
+    public void reset() //resets the game
     {
         xCoords = new ArrayList<Integer>();
         yCoords = new ArrayList<Integer>();
@@ -44,12 +44,16 @@ public class Snake extends JComponent{
         foody = 7;
         score = 0;
     }
-    public void addPoint(int x,int y) 
+    public void addPoint(int x,int y) //adds a snake segment to the arraylist
     {
         xCoords.add(x);
         yCoords.add(y);
     }
-    public boolean move() //returns false if you end up dying, returns true otherwise
+    /*
+    Moves the player forward, and accounts for all actions that may happen, e.g. eating a dot
+    Returns true if player is still alive, returns false otherwise
+    */
+    public boolean move()
     {
         switch (direction)
         {
@@ -70,18 +74,23 @@ public class Snake extends JComponent{
                 yCoords.add(yCoords.get(yCoords.size()-1));
                 break;
         }
-        if(!(foodx == xCoords.get(xCoords.size()-1) && foody == yCoords.get(yCoords.size()-1))) //if not eating a dot
+
+        
+        //surprisingly efficient algorithm to simulate dot eating
+        if(!(foodx == xCoords.get(xCoords.size()-1) && foody == yCoords.get(yCoords.size()-1))) //if not eating a dot, remove the last segment of the snake
         {
             xCoords.remove(0);
             yCoords.remove(0);
         }
-        else{
+        else{ //is eating a dot
             //regenerate food coordinates
             foodx = (int)(Math.random()*20);
             foody = (int)(Math.random()*15);
             score++;
         }
-        //check for death
+
+        
+        //check for death; all output statements are for debugging and may be removed
         if(overlap())
         {
             System.out.println("You committed ouroboros!");
@@ -99,9 +108,9 @@ public class Snake extends JComponent{
         }
         return true;
     }
-    public boolean overlap()
+    public boolean overlap() //see if the snake has collided with itself
     {
-        for(int i=0;i<xCoords.size()-1;i++) //only need to check last one
+        for(int i=0;i<xCoords.size()-1;i++) //only need to check if the head is colliding with anything
         {
             if(xCoords.get(i) == xCoords.get(xCoords.size()-1))
             {
@@ -113,17 +122,19 @@ public class Snake extends JComponent{
         }
         return false;
     }
+    //main display of the game
     public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
         int xintercept = 50,yintercept = 50;
-        //field
+
+        
+        //draws a 20 by 15 field
         for(int i=0;i<20;i++)
         {
             for(int j=0;j<15;j++)
             {
                 //draw square based on the sum of i and j
-
                 Rectangle grid = new Rectangle(30*i+xintercept,30*j+yintercept,30,30);
                 if((i+j)%2 == 1)
                 {
@@ -135,24 +146,23 @@ public class Snake extends JComponent{
                 }
                 g2.fill(grid);
             }
-        }
-        //food
+        }    
+
         
-        //snake
+        //draws snake
         g2.setColor(new Color(75,75,255)); 
-        //add first segment
+        //soon to be added: individual head segment implementation
         for(int i=xCoords.size()-1;i>=0;i--)//place the snake body
         {
             //later element = earlier created segment
             Rectangle part2 = new Rectangle(30*xCoords.get(i)+xintercept,30*yCoords.get(i)+yintercept,30,30);
             g2.fill(part2);
         }
+
+        
+        //draws food
         g2.setColor(new Color(255,75,75));
         Ellipse2D.Double part = new Ellipse2D.Double(30*foodx+xintercept,30*foody+yintercept,30,30);
         g2.fill(part);
-        //add final segment
-        //bonus: screw time complexity, when did you want to play usaco-paced snake
-        
-
     }
 }
