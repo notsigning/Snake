@@ -73,9 +73,9 @@ public class SnakeMain{
         frame.add(right);
 
 
-        //ok timothy heres ur silly keybinds
+        //Keybinds, with controls to prevent player from moving backwards by accident and dying instantly as a result
         frame.setFocusable(true);
-        KeyListener timothy = new KeyListener() {
+        KeyListener timothy = new KeyListener() { //named after a friend who told me to add keybinds
             @Override
             public void keyPressed(KeyEvent e)
             {
@@ -119,15 +119,17 @@ public class SnakeMain{
                 if (!snek.move()) {
                     ((Timer) evt.getSource()).stop(); // stop the game if snake dies
                     if(JOptionPane.showConfirmDialog(frame,"Your score: " + snek.score + "\nDo you want to restart?","You Died!",0) == 0){
+                        //restart game
                         snek.reset();
                         ((Timer) evt.getSource()).start();
                     }
+                    //If not restarting, exit game
                     else frame.setVisible(false);
                     
                 }
                 else {
                     snek.repaint();
-                    System.out.println(frames);
+                    System.out.println(frames); //mostly for debugging purposes, remove as needed
                     frames++;
                 }
             }
