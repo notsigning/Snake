@@ -77,7 +77,8 @@ public class Snake extends JComponent{
 
         
         //surprisingly efficient algorithm to simulate dot eating
-        if(!(foodx == xCoords.get(xCoords.size()-1) && foody == yCoords.get(yCoords.size()-1))) //if not eating a dot, remove the last segment of the snake
+        if(!(foodx == xCoords.get(xCoords.size()-1) && foody == yCoords.get(yCoords.size()-1)))
+        //if not eating a dot, remove the last segment of the snake
         {
             xCoords.remove(0);
             yCoords.remove(0);
