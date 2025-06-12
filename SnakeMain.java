@@ -3,7 +3,7 @@ import java.awt.event.*;
 public class SnakeMain{
     public static void main(String[] args) throws InterruptedException
     {
-
+        //create new window
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000,600);
@@ -13,7 +13,7 @@ public class SnakeMain{
 
 
 
-        //buttons
+        //buttons, for people who use touchscreen
         JButton up = new JButton("^");
         JButton down = new JButton("V");
         JButton left = new JButton("<");
@@ -73,9 +73,10 @@ public class SnakeMain{
         frame.add(right);
 
 
-        //Keybinds, with controls to prevent player from moving backwards by accident and dying instantly as a result
+        //Keybinds
+        //with controls to prevent player from moving backwards by accident and dying instantly as a result
         frame.setFocusable(true);
-        KeyListener timothy = new KeyListener() { //named after a friend who told me to add keybinds
+        KeyListener keyListener = new KeyListener() { //named after a friend who told me to add keybinds
             @Override
             public void keyPressed(KeyEvent e)
             {
@@ -98,26 +99,26 @@ public class SnakeMain{
                 }
                 //snek.move();
             }
-
+            //basically unused
             @Override
-            public void keyTyped(KeyEvent e) {
-            }
-
+            public void keyTyped(KeyEvent e) {}
             @Override
             public void keyReleased(KeyEvent e) {}
         };
 
-        frame.addKeyListener(timothy);
+        frame.addKeyListener(keyListener);
 
         //snake
         frame.add(snek);
         frame.setVisible(true);
         int delay = 150; // milliseconds
-        Timer timer = new Timer(delay, new ActionListener() {
+        ActionListener ticker = new ActionListener() {
             int frames = 0;
             public void actionPerformed(ActionEvent evt) {
                 if (!snek.move()) {
                     ((Timer) evt.getSource()).stop(); // stop the game if snake dies
+
+                    //prompt user about restarting
                     if(JOptionPane.showConfirmDialog(frame,"Your score: " + snek.score + "\nDo you want to restart?","You Died!",0) == 0){
                         //restart game
                         snek.reset();
@@ -133,7 +134,8 @@ public class SnakeMain{
                     frames++;
                 }
             }
-        });
-    timer.start();
+        };
+        Timer timer = new Timer(delay, tick);
+        timer.start();
     }
 }
