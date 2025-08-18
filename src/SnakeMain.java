@@ -1,15 +1,16 @@
 import javax.swing.*;
 import java.awt.event.*;
-public class SnakeMain {
+public class SnakeMain{
     static int frames = 0; //frame count
     static boolean gameStarted = false;
-    static Snake snek = new Snake();
-    public static void switchDirection(int nextDir) {
+    static ModdedSnake snek = new ModdedSnake();
+    public static void switchDirection(int nextDir){
         gameStarted = true; //start game upon press
         //only changes direction sometimes
+        //WARNING: This formula fails for currentdirection = 2
         if((snek.getDirection()+2)%4 != nextDir) snek.setDirection(nextDir);
     }
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException{
         //create new window
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,9 +26,9 @@ public class SnakeMain {
         JButton right = new JButton(">");
 
         //north/up
-        ActionListener n = new ActionListener() {
+        ActionListener n = new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e){
                 switchDirection(1);
             }
         };
@@ -36,9 +37,9 @@ public class SnakeMain {
 
 
         //south/down
-        ActionListener s = new ActionListener() {
+        ActionListener s = new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e){
                 switchDirection(3);
             }
         };
@@ -47,9 +48,9 @@ public class SnakeMain {
 
 
         //west/left
-        ActionListener w = new ActionListener() {
+        ActionListener w = new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e){
                 switchDirection(4);
             }
         };
@@ -58,9 +59,9 @@ public class SnakeMain {
 
 
         //east/right
-        ActionListener e = new ActionListener() {
+        ActionListener e = new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e){
                 switchDirection(2);
             }
         };
@@ -77,33 +78,33 @@ public class SnakeMain {
         //Keybinds
         //with controls to prevent player from moving backwards by accident and dying instantly as a result
         frame.setFocusable(true);
-        KeyListener keyListener = new KeyListener()  { //Used to be named after a friend who told me to add keybinds
+        KeyListener keyListener = new KeyListener() { //Used to be named after a friend who told me to add keybinds
             @Override
-            public void keyPressed(KeyEvent e) {
+            public void keyPressed(KeyEvent e){
                 gameStarted = true; //start game upon key press
                 int key = e.getKeyCode();
-                System.out.println("Press");
-                if (key == KeyEvent.VK_LEFT)  {
+                //System.out.println("Press");
+                if (key == KeyEvent.VK_LEFT) {
                     switchDirection(4);
                 }
             
-                if (key == KeyEvent.VK_RIGHT)  {
+                if (key == KeyEvent.VK_RIGHT) {
                     switchDirection(2);
                 }
             
-                if (key == KeyEvent.VK_UP)  {
+                if (key == KeyEvent.VK_UP) {
                     switchDirection(1);
                 }
             
-                if (key == KeyEvent.VK_DOWN)  {
+                if (key == KeyEvent.VK_DOWN) {
                     switchDirection(3);
                 }
             }
             //basically unused
             @Override
-            public void keyTyped(KeyEvent e)  {}
+            public void keyTyped(KeyEvent e) {}
             @Override
-            public void keyReleased(KeyEvent e)  {}
+            public void keyReleased(KeyEvent e) {}
         };
 
         frame.addKeyListener(keyListener);
@@ -111,25 +112,29 @@ public class SnakeMain {
         //snake
         frame.add(snek);
         frame.setVisible(true);
-        int delay = 150; // milliseconds, may be modified
-        ActionListener ticker = new ActionListener()  {
-            public void actionPerformed(ActionEvent evt)  {
-                if(gameStarted) {
-                    if (!snek.move())  {
+        int delay = 100; // milliseconds, may be modified
+        ActionListener ticker = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                if(gameStarted){
+                    if (!snek.move()) {
                         ((Timer) evt.getSource()).stop(); // stop the game if snake dies
                         //prompt user about restarting
-                        if(JOptionPane.showConfirmDialog(frame,"Your score: " + snek.score + "\nDo you want to restart?","You Died!",0) == 0) {
+                        if(JOptionPane.showConfirmDialog(frame,"Your score: " + snek.score + "\nDo you want to restart?","You Died!",0) == 0){
                             //restart game
                             snek.reset();
+                            snek.repaint();
                             gameStarted = false;
                             ((Timer) evt.getSource()).start();
                         }
                         //If not restarting, exit game
-                        else frame.setVisible(false);
+                        else{
+                            frame.setVisible(false);
+                            System.exit(0);
+                        }
                    }
-                    else  {
+                    else {
                         snek.repaint();
-                        System.out.println(frames); //mostly for debugging purposes, remove as needed
+                        //System.out.println(frames); //mostly for debugging purposes, remove as needed
                         frames++;
                     }
                 }
